@@ -26,6 +26,7 @@ const initialCounterState: CounterState = {counter: 0}
 const initialState: State = {
     counters: {},
 }
+export const selectCounter = (state: AppState, counterId: CounterId) => state.counters[counterId];
 const reducer = (state = initialState, action: Action): State => {
     switch (action.type) {
         case "increment": {
@@ -63,3 +64,5 @@ const reducer = (state = initialState, action: Action): State => {
 export const store = configureStore({
     reducer: reducer,
 })
+
+export type AppState = ReturnType<typeof store.getState>
