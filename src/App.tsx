@@ -1,20 +1,15 @@
-import {useState} from 'react'
 import './App.css'
-import {Counter} from "./components/Counter.tsx";
+import {Counter} from "./components/counter/counter.tsx";
+import {UsersList} from "./users-list.tsx";
 
 function App() {
-    const [count, setCount] = useState(0);
-
     return (
         <>
-            <h1>Vite + React</h1>
             <div className="card">
                 <Counter counterId='first'/>
                 <Counter counterId='second'/>
+                <UsersList/>
             </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
         </>
     )
 }
