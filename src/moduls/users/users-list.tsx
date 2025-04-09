@@ -1,35 +1,21 @@
 import {useState} from "react";
-import { useAppDispatch, useAppSelector, User} from "./store/store.ts";
+import { useAppDispatch, useAppSelector} from "../../store/store.ts";
+import {selectSelectedUser, selectSortedUsers, User} from "./users.slice.tsx";
 
 
 
 export function UsersList() {
-    console.log("render")
     const dispatch = useAppDispatch();
     const [sortType, setsSortType] = useState<"asc" | "desc">("asc")
-    const ids = useAppSelector((state) => state.users.ids);
-    const enteties = useAppSelector((state) => state.users.entities);
-    const selectedUserId = useAppSelector((state) => state.users.selectedUserId)
 
-    const selectedUser = selectedUserId ? enteties[selectedUserId] : undefined;
+    const sortedUsers = useAppSelector(selectSortedUsers(sortType))
+    const selectedUser = useAppSelector(selectSelectedUser);
 
-    console.log(ids)
-
-    const sortedUsers = ids
-        .map((id) => enteties[id])
-        .sort((a, b) => {
-            if (sortType === "asc") {
-                return a.name.localeCompare(b.name)
-            } else {
-                return b.name.localeCompare(a.name);
-            }
-        });
     const handleUserClick = (user: User) => {
         dispatch({
             type: "userSelected",
-            payload: {userId: user.id}
-
-        })
+            payload: { userId: user.id }
+        });
     };
 
     return (
