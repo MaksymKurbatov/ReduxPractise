@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../store/store.ts";
-import {selectSortedUsers, User, users, usersSlice} from "./users.slice.tsx";
+import {selectSelectedUser, selectSortedUsers, User, usersSlice} from "./users.slice.tsx";
 
 
 export function UsersList() {
@@ -8,10 +8,9 @@ export function UsersList() {
     const [sortType, setsSortType] = useState<"asc" | "desc">("asc")
 
     const sortedUsers = useAppSelector(selectSortedUsers(sortType))
-    const selectedUser = useAppSelector(usersSlice.selectors.selectedUserId);
-
+    const selectedUser = useAppSelector(selectSelectedUser);
     const handleUserClick = (user: User) => {
-        dispatch(usersSlice.actions.selected({ userId: user.id }));
+        dispatch(usersSlice.actions.selected({userId: user.id}));
     };
 
     return (
@@ -19,7 +18,7 @@ export function UsersList() {
             <div>
                 {selectedUser ? (
                     <div>
-                        {"Selected "} {selectedUser.id}
+                        {`Select ${selectedUser.name}`}
                     </div>
                 ) : (
                     "No user selected"

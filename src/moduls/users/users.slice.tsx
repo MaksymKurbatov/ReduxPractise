@@ -52,7 +52,7 @@ export const usersSlice = createSlice({
     name: "users",
     initialState: initialUsersState,
     selectors: {
-        selectedUserId: (state) => (state.selectedUserId),
+        selectedUserId: (state) => state.selectedUserId,
     },
     reducers: {
         selected: (state, action: PayloadAction<{ userId: string }>) => {
