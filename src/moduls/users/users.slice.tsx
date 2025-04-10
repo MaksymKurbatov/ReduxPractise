@@ -1,4 +1,4 @@
-import {createSelector} from '@reduxjs/toolkit'
+import {createSelector, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {AppState} from "../../store/store.ts";
 
 export type UserId = string;
@@ -18,63 +18,17 @@ type UsersState = {
     ids: UserId[];
     selectedUserId: UserId | undefined
 }
-
-export type UserSelectedAction = {
-    type: 'userSelected';
-    payload: {
-        userId: UserId;
-    };
-};
-
-export type UserUnSelectedAction = {
-    type: 'userUnSelected';
-    payload: {
-        userID: UserId
-    };
-}
 export type UserStoredAction = {
     type: 'userStored';
     payload: {
         users: User[]
     };
 }
-type Action = UserSelectedAction | UserUnSelectedAction | UserStoredAction;
-
 const initialUsersState: UsersState = {
     entities: {},
     ids: [],
     selectedUserId: undefined
 }
-export const usersReducer = (state = initialUsersState, action: Action): UsersState => {
-    switch (action.type) {
-        case "userStored": {
-            const {users} = action.payload
-            return {
-                ...state,
-                entities: users.reduce((acc, user) => {
-                    acc[user.id] = user;
-                    return acc;
-                }, {} as Record<UserId, User>),
-                ids: users.map((user) => user.id)
-            }
-        }
-        case "userSelected": {
-            const {userId} = action.payload
-            return {
-                ...state,
-                selectedUserId: userId
-            }
-        }
-        case "userUnSelected": {
-            return {
-                ...state,
-                selectedUserId: undefined
-            }
-        }
-        default:
-            return state;
-    }
-};
 export const selectUserEntities = (state: AppState) => state.users.entities;
 export const selectUserIds = (state: AppState) => state.users.ids;
 export const selectedUserId = (state: AppState) => state.users.selectedUserId;
@@ -93,5 +47,30 @@ export const selectSortedUsers = (sort: "asc" | "desc") => createSelector(
                     : b.name.localeCompare(a.name);
             })
 );
+
+export const usersSlice = createSlice({
+    name: "users",
+    initialState: initialUsersState,
+    selectors: {
+        selectedUserId: (state) => (state.selectedUserId),
+    },
+    reducers: {
+        selected: (state, action: PayloadAction<{ userId: string }>) => {
+            state.selectedUserId = action.payload.userId;
+        },
+        selectedRemove: (state) => {
+            state.selectedUserId = undefined;
+        },
+        stored: (state, action: PayloadAction<{ userId: User[] }>) => {
+            const {users} = action.payload
+
+            state.entities = users.reduce((acc, user) => {
+                acc[user.id] = user;
+                return acc;
+            }, {} as Record<UserId, User>);
+            state.ids = users.map((user) => user.id)
+        }
+    }
+})
 
 

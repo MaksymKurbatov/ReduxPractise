@@ -1,7 +1,6 @@
 import {useState} from "react";
-import { useAppDispatch, useAppSelector} from "../../store/store.ts";
-import {selectSelectedUser, selectSortedUsers, User} from "./users.slice.tsx";
-
+import {useAppDispatch, useAppSelector} from "../../store/store.ts";
+import {selectSortedUsers, User, users, usersSlice} from "./users.slice.tsx";
 
 
 export function UsersList() {
@@ -9,13 +8,10 @@ export function UsersList() {
     const [sortType, setsSortType] = useState<"asc" | "desc">("asc")
 
     const sortedUsers = useAppSelector(selectSortedUsers(sortType))
-    const selectedUser = useAppSelector(selectSelectedUser);
+    const selectedUser = useAppSelector(usersSlice.selectors.selectedUserId);
 
     const handleUserClick = (user: User) => {
-        dispatch({
-            type: "userSelected",
-            payload: { userId: user.id }
-        });
+        dispatch(usersSlice.actions.selected({ userId: user.id }));
     };
 
     return (
@@ -37,7 +33,7 @@ export function UsersList() {
             </button>
             <div>
                 {
-                    sortedUsers.map((user,index) => (
+                    sortedUsers.map((user, index) => (
                         <div user={user} style={{margin: '8px'}} onClick={() => handleUserClick(user)}>
                             {sortedUsers[index].name}
                         </div>
